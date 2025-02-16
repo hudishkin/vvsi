@@ -9,7 +9,7 @@ import VVSI
 
 extension ListView {
 
-    final class Interactor: VVSI.ViewStateInteractor<VState, VAction, VNotification> {
+    final class Interactor: ViewStateInteractor<VState, VAction, VNotification> {
 
         override init() {
             super.init()
