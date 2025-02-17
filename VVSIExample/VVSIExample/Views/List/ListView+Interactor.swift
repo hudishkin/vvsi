@@ -15,8 +15,10 @@ extension ListView {
             super.init()
         }
         
-        override func execute(_ action: VAction, _ updater: @escaping (@escaping (inout S) -> Void) -> Void) {
-
+        override func execute(
+            _ action: VAction,
+            _ updater: @escaping StateUpdater<VState>
+        ) {
             switch action {
             case .add:
                 updater { state in
@@ -29,7 +31,6 @@ extension ListView {
                     }
                 }
             }
-
         }
     }
 

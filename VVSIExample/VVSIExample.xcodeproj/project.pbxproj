@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D26CE282D61CCE600C76F8C /* VVSI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26CE272D61CCE600C76F8C /* VVSI */; };
-		6D26CE2B2D61DA3000C76F8C /* VVSI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26CE2A2D61DA3000C76F8C /* VVSI */; };
+		6D26CE742D62DD9600C76F8C /* VVSI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26CE732D62DD9600C76F8C /* VVSI */; };
+		6D26CE772D62DDB200C76F8C /* VVSI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26CE762D62DDB200C76F8C /* VVSI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D26CE2B2D61DA3000C76F8C /* VVSI in Frameworks */,
-				6D26CE282D61CCE600C76F8C /* VVSI in Frameworks */,
+				6D26CE772D62DDB200C76F8C /* VVSI in Frameworks */,
+				6D26CE742D62DD9600C76F8C /* VVSI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 			);
 			name = VVSIExample;
 			packageProductDependencies = (
-				6D26CE272D61CCE600C76F8C /* VVSI */,
-				6D26CE2A2D61DA3000C76F8C /* VVSI */,
+				6D26CE732D62DD9600C76F8C /* VVSI */,
+				6D26CE762D62DDB200C76F8C /* VVSI */,
 			);
 			productName = VVSIExample;
 			productReference = 6D26CDEE2D61CAA400C76F8C /* VVSIExample.app */;
@@ -104,7 +104,7 @@
 			mainGroup = 6D26CDE52D61CAA400C76F8C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				6D26CE292D61DA3000C76F8C /* XCLocalSwiftPackageReference "../../VVSI" */,
+				6D26CE752D62DDB200C76F8C /* XCLocalSwiftPackageReference "../../VVSI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6D26CDEF2D61CAA400C76F8C /* Products */;
@@ -335,18 +335,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6D26CE292D61DA3000C76F8C /* XCLocalSwiftPackageReference "../../VVSI" */ = {
+		6D26CE752D62DDB200C76F8C /* XCLocalSwiftPackageReference "../../VVSI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../VVSI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6D26CE272D61CCE600C76F8C /* VVSI */ = {
+		6D26CE732D62DD9600C76F8C /* VVSI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VVSI;
 		};
-		6D26CE2A2D61DA3000C76F8C /* VVSI */ = {
+		6D26CE762D62DDB200C76F8C /* VVSI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = VVSI;
 		};

@@ -18,8 +18,6 @@ extension ListView {
         case remove
     }
 
-    enum VNotification: NotificationProtocol {
-
-    }
+    enum VNotification: NotificationProtocol { }
 
 }

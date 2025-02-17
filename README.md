@@ -7,6 +7,9 @@ Experimental architecture for SwiftUI application. Something between TCA and MVV
 Here's a basic example of how to use:
 
 ```swift
+
+// ListView.swift
+
 import VVSI
 import SwiftUI
 
@@ -38,7 +41,11 @@ struct ListView: View {
 
 }
 
-// ...
+```
+
+```swift
+
+// ListView+State.swift
 
 extension ListView {
 
@@ -51,13 +58,15 @@ extension ListView {
         case remove
     }
 
-    enum VNotification: NotificationProtocol {
-
-    }
+    enum VNotification: NotificationProtocol { }
 
 }
 
-// ... 
+```
+
+```swift
+
+// ListView+Interactor.swift
 
 extension ListView {
 
@@ -67,8 +76,10 @@ extension ListView {
             super.init()
         }
         
-        override func execute(_ action: VAction, _ updater: @escaping (@escaping (inout S) -> Void) -> Void) {
-
+        override func execute(
+            _ action: VAction,
+            _ updater: @escaping StateUpdater<VState>
+        ) {
             switch action {
             case .add:
                 updater { state in
@@ -81,7 +92,6 @@ extension ListView {
                     }
                 }
             }
-
         }
     }
 

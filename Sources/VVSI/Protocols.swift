@@ -8,6 +8,8 @@ extension Never: StateProtocol { }
 extension Never: ActionProtocol { }
 extension Never: NotificationProtocol { }
 
+public typealias StateUpdater<S> = ((@escaping (inout S) -> Void) -> Void)
+
 public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublisher.Output == Void {
 
     associatedtype S = StateProtocol
@@ -29,5 +31,8 @@ public protocol ViewStateInteractorProtocol {
 
     var notifications: PassthroughSubject<N, Never> { get }
 
-    func execute(_ action: A, _ updater: @escaping (@escaping (inout S) -> Void) -> Void)
+    func execute(
+        _ action: A,
+        _ updater: @escaping StateUpdater<S>
+    )
 }

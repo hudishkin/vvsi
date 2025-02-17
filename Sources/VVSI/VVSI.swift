@@ -40,6 +40,6 @@ open class ViewStateInteractor<State: StateProtocol, Action: ActionProtocol, Not
 
     open func execute(
         _ action: Action,
-        _ update: @escaping (@escaping (inout State) -> Void) -> Void
+        _ update: @escaping StateUpdater<State>
     ) { }
 }

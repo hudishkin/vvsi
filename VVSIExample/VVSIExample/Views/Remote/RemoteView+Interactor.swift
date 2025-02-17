@@ -15,7 +15,10 @@ extension RemoteView {
             super.init()
         }
 
-        override func execute(_ action: VAction, _ updater: @escaping (@escaping (inout VState) -> Void) -> Void) {
+        override func execute(
+            _ action: VAction,
+            _ updater: @escaping StateUpdater<VState>
+        ) {
             switch action {
             case .load:
                 Task {
