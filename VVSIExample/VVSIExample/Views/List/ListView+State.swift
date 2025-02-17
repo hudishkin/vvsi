@@ -10,7 +10,7 @@ import VVSI
 extension ListView {
 
     struct VState: StateProtocol {
-        var items: [String]
+        var items: [String] = []
     }
 
     enum VAction: ActionProtocol {
