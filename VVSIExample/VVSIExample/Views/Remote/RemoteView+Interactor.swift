@@ -21,26 +21,25 @@ extension RemoteView {
         ) {
             switch action {
             case .load:
-                Task {
+                Task.detached { [self] in
                     do {
                         notifications.send(.event("Starting"))
                         let products = try await self.fetchData()
-                        await MainActor.run {
-                            updater { state in
-                                state.items = products.map { .init(
-                                    id: $0.id,
-                                    title: $0.title,
-                                    image: $0.image)
-                                }
+                        await updater { state in
+                            state.items = products.map { .init(
+                                id: $0.id,
+                                title: $0.title,
+                                image: $0.image)
                             }
-                            notifications.send(.event("Finished"))
                         }
+
+                        notifications.send(.event("Finished"))
+
                     } catch {
                         notifications.send(.event("Finished with error"))
-                        await MainActor.run {
-                            updater { state in
-                                state.items = []
-                            }
+
+                        await updater { state in
+                            state.items = []
                         }
                     }
 

@@ -14,20 +14,25 @@ extension ListView {
         override init() {
             super.init()
         }
-        
+
         override func execute(
             _ action: VAction,
             _ updater: @escaping StateUpdater<VState>
         ) {
             switch action {
             case .add:
-                updater { state in
-                    state.items.append("New item")
+                Task {
+                    await updater { state in
+                        state.items.append("New item")
+                    }
                 }
+
             case .remove:
-                updater { state in
-                    if !state.items.isEmpty {
-                        state.items.removeLast()
+                Task {
+                    await updater { state in
+                        if !state.items.isEmpty {
+                            state.items.removeLast()
+                        }
                     }
                 }
             }

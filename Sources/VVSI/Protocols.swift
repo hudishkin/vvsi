@@ -8,7 +8,7 @@ extension Never: StateProtocol { }
 extension Never: ActionProtocol { }
 extension Never: NotificationProtocol { }
 
-public typealias StateUpdater<S> = ((@escaping (inout S) -> Void) -> Void)
+public typealias StateUpdater<S> = ((@escaping (inout S) -> Void) async -> Void)
 
 public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublisher.Output == Void {
 

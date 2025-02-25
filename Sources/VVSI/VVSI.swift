@@ -1,7 +1,8 @@
 import SwiftUI
 import Combine
 
-public final class ViewState<State: StateProtocol, Action: ActionProtocol, Notification: NotificationProtocol>: ViewStateProtocol {
+@MainActor
+public final class ViewState<State: StateProtocol, Action: ActionProtocol, Notification: NotificationProtocol>: @preconcurrency ViewStateProtocol {
 
     private(set) public var notifications: AnyPublisher<Notification, Never>
     @Published
@@ -22,11 +23,7 @@ public final class ViewState<State: StateProtocol, Action: ActionProtocol, Notif
         interactor.execute(action) { [weak self] updater in
             guard let self else { return }
 
-            assert(Thread.isMainThread)
-
-            var state = self.state
-            updater(&state)
-            self.state = state
+            updater(&self.state)
         }
     }
 
