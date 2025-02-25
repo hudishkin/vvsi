@@ -6,16 +6,24 @@
 //
 
 import VVSI
+@preconcurrency import Combine
 
 extension RemoteView {
 
-    final class Interactor: ViewStateInteractor<VState, VAction, VNotification> {
+    final class Interactor: ViewStateInteractorProtocol {
 
-        override init() {
-            super.init()
+        typealias S = VState
+        typealias A = VAction
+        typealias N = VNotification
+
+        let notifications: PassthroughSubject<N, Never> = .init()
+
+        init() {
+
         }
 
-        override func execute(
+        func execute(
+            _ state: CurrentState<VState>,
             _ action: VAction,
             _ updater: @escaping StateUpdater<VState>
         ) {

@@ -1,17 +1,17 @@
 import Combine
 
-public protocol StateProtocol { }
-public protocol ActionProtocol { }
-public protocol NotificationProtocol { }
+public protocol StateProtocol: Sendable { }
+public protocol ActionProtocol: Sendable { }
+public protocol NotificationProtocol: Sendable { }
 
 extension Never: StateProtocol { }
 extension Never: ActionProtocol { }
 extension Never: NotificationProtocol { }
 
-public typealias StateUpdater<S> = ((@escaping (inout S) -> Void) async -> Void)
+public typealias StateUpdater<S: Sendable> = ((@MainActor @escaping (inout S) -> Void) async -> Void)
+public typealias CurrentState<S: Sendable> = () -> S
 
 public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublisher.Output == Void {
-
     associatedtype S = StateProtocol
     associatedtype A = ActionProtocol
     associatedtype N = NotificationProtocol
@@ -23,8 +23,7 @@ public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublis
 }
 
 
-public protocol ViewStateInteractorProtocol {
-
+public protocol ViewStateInteractorProtocol: Sendable {
     associatedtype S = StateProtocol
     associatedtype A = ActionProtocol
     associatedtype N = NotificationProtocol
@@ -32,6 +31,7 @@ public protocol ViewStateInteractorProtocol {
     var notifications: PassthroughSubject<N, Never> { get }
 
     func execute(
+        _ state: CurrentState<S>,
         _ action: A,
         _ updater: @escaping StateUpdater<S>
     )

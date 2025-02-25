@@ -1,42 +1,30 @@
 import SwiftUI
 import Combine
 
-@MainActor
-public final class ViewState<State: StateProtocol, Action: ActionProtocol, Notification: NotificationProtocol>: @preconcurrency ViewStateProtocol {
+public final class ViewState<Interactor: ViewStateInteractorProtocol>: @preconcurrency ViewStateProtocol where Interactor.S: StateProtocol, Interactor.A: ActionProtocol, Interactor.N: NotificationProtocol {
 
-    private(set) public var notifications: AnyPublisher<Notification, Never>
+    private(set) public var notifications: AnyPublisher<Interactor.N, Never>
+
     @Published
-    private(set) public var state: State
+    private(set) public var state: Interactor.S
 
-    private var interactor: ViewStateInteractor<State, Action, Notification>
+    private var interactor: Interactor
 
     public init(
-        _ state: State,
-        _ interactor: ViewStateInteractor<State, Action, Notification>
+        _ state: Interactor.S,
+        _ interactor: Interactor
     ) {
         self.state = state
         self.interactor = interactor
         self.notifications = interactor.notifications.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
-    public func trigger(_ action: Action) {
-        interactor.execute(action) { [weak self] updater in
+    public func trigger(_ action: Interactor.A) {
+        interactor.execute({ state }, action) { [weak self] updater in
             guard let self else { return }
 
-            updater(&self.state)
+            await updater(&state)
         }
     }
 
-}
-
-open class ViewStateInteractor<State: StateProtocol, Action: ActionProtocol, Notification: NotificationProtocol>: ViewStateInteractorProtocol {
-
-    public var notifications: PassthroughSubject<Notification, Never> = .init()
-
-    public init() {}
-
-    open func execute(
-        _ action: Action,
-        _ update: @escaping StateUpdater<State>
-    ) { }
 }

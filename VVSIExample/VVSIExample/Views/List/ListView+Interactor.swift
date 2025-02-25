@@ -6,29 +6,35 @@
 //
 
 import VVSI
+@preconcurrency import Combine
 
 extension ListView {
 
-    final class Interactor: ViewStateInteractor<VState, VAction, VNotification> {
+    final class Interactor: ViewStateInteractorProtocol {
 
-        override init() {
-            super.init()
-        }
+        typealias S = VState
+        typealias A = VAction
+        typealias N = VNotification
 
-        override func execute(
+        let notifications: PassthroughSubject<N, Never> = .init()
+
+        init() { }
+
+        func execute(
+            _ state: CurrentState<VState>,
             _ action: VAction,
             _ updater: @escaping StateUpdater<VState>
         ) {
             switch action {
             case .add:
-                Task {
+                Task.detached {
                     await updater { state in
                         state.items.append("New item")
                     }
                 }
 
             case .remove:
-                Task {
+                Task.detached {
                     await updater { state in
                         if !state.items.isEmpty {
                             state.items.removeLast()

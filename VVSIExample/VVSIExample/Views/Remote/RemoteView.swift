@@ -11,7 +11,7 @@ import VVSI
 struct RemoteView: View {
 
     @StateObject
-    var viewState = ViewState<VState, VAction, VNotification>(.init(items: []), Interactor())
+    var viewState = ViewState(.init(items: []), Interactor())
 
     @State
     var infoText: String = ""
