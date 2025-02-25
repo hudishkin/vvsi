@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-public final class ViewState<Interactor: ViewStateInteractorProtocol>: @preconcurrency ViewStateProtocol where Interactor.S: StateProtocol, Interactor.A: ActionProtocol, Interactor.N: NotificationProtocol {
+public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewStateProtocol where Interactor.S: StateProtocol, Interactor.A: ActionProtocol, Interactor.N: NotificationProtocol {
 
     private(set) public var notifications: AnyPublisher<Interactor.N, Never>
 
