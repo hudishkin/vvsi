@@ -8,6 +8,17 @@
 import VVSI
 @preconcurrency import Combine
 
+class Dependencies {
+
+    class Service { }
+
+    var service: Service
+
+    init(service: Service) {
+        self.service = service
+    }
+}
+
 extension ListView {
 
     final class Interactor: ViewStateInteractorProtocol {
@@ -18,12 +29,16 @@ extension ListView {
 
         let notifications: PassthroughSubject<N, Never> = .init()
 
-        init() { }
+        let service: Dependencies.Service
+
+        init(dependencies: Dependencies) {
+            service = dependencies.service
+        }
 
         func execute(
-            _ state: CurrentState<VState>,
+            _ state: CurrentState<S>,
             _ action: VAction,
-            _ updater: @escaping StateUpdater<VState>
+            _ updater: @escaping StateUpdater<S>
         ) {
             switch action {
             case .add:

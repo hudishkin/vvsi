@@ -23,7 +23,7 @@ public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublis
 }
 
 
-public protocol ViewStateInteractorProtocol: Sendable {
+public protocol ViewStateInteractorProtocol {
     associatedtype S = StateProtocol
     associatedtype A = ActionProtocol
     associatedtype N = NotificationProtocol

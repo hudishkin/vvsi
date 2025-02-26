@@ -11,7 +11,7 @@ import VVSI
 struct ListView: View {
 
     @StateObject
-    var viewState = ViewState(VState(), Interactor())
+    var viewState = ViewState(VState(), Interactor(dependencies: .init(service: Dependencies.Service())))
 
     var body: some View {
 
