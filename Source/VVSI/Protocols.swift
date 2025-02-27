@@ -1,8 +1,8 @@
 import Combine
 
 public protocol StateProtocol: Sendable { }
-public protocol ActionProtocol: Sendable { }
-public protocol NotificationProtocol: Sendable { }
+public protocol ActionProtocol { }
+public protocol NotificationProtocol { }
 
 extension Never: StateProtocol { }
 extension Never: ActionProtocol { }
