@@ -31,6 +31,11 @@ struct ListView: View {
             } label: {
                 Text("Remove")
             }
+            Button {
+                viewState.trigger(.random(.init(count: Int.random(in: 1..<10), length: Int.random(in: 1..<5))))
+            } label: {
+                Text("Random")
+            }
         }
     }
 

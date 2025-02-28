@@ -9,6 +9,11 @@ public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewState
     private(set) public var state: Interactor.S
 
     private var interactor: Interactor
+    
+    @MainActor
+    private lazy var currentState: CurrentState<Interactor.S> = {
+        return self.state
+    }
 
     public init(
         _ state: Interactor.S,
@@ -19,8 +24,12 @@ public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewState
         self.notifications = interactor.notifications.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
+    @MainActor
     public func trigger(_ action: Interactor.A) {
-        interactor.execute({ state }, action) { [weak self] updater in
+        interactor.execute(
+            currentState,
+            action
+        ) { [weak self] updater in
             guard let self else { return }
 
             await updater(&state)

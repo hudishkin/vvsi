@@ -9,30 +9,36 @@ extension Never: ActionProtocol { }
 extension Never: NotificationProtocol { }
 
 public typealias StateUpdater<S: Sendable> = ((@MainActor @escaping (inout S) -> Void) async -> Void)
-public typealias CurrentState<S: Sendable> = () -> S
+public typealias CurrentState<S: Sendable> = () async -> S
+public typealias ReuseTrigger<A> = (A) -> Void
 
-public protocol ViewStateProtocol: ObservableObject where ObjectWillChangePublisher.Output == Void {
-    associatedtype S = StateProtocol
-    associatedtype A = ActionProtocol
-    associatedtype N = NotificationProtocol
+public protocol ViewStateProtocol: AnyObject, ObservableObject where ObjectWillChangePublisher.Output == Void {
+
+    associatedtype S: StateProtocol
+    associatedtype A: ActionProtocol
+    associatedtype N: NotificationProtocol
 
     var notifications: AnyPublisher<N, Never> { get }
     var state: S { get }
 
+    @MainActor
     func trigger(_ action: A)
+
 }
 
-
 public protocol ViewStateInteractorProtocol {
-    associatedtype S = StateProtocol
-    associatedtype A = ActionProtocol
-    associatedtype N = NotificationProtocol
+
+    associatedtype S: StateProtocol
+    associatedtype A: ActionProtocol
+    associatedtype N: NotificationProtocol
 
     var notifications: PassthroughSubject<N, Never> { get }
 
+    @MainActor
     func execute(
-        _ state: CurrentState<S>,
+        _ state: @escaping CurrentState<S>,
         _ action: A,
         _ updater: @escaping StateUpdater<S>
     )
+
 }

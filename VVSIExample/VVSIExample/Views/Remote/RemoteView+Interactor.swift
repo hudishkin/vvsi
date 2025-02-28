@@ -17,10 +17,9 @@ extension RemoteView {
         typealias N = VNotification
 
         let notifications: PassthroughSubject<N, Never> = .init()
+        var reuseTrigger: VVSI.ReuseTrigger<RemoteView.VAction> = { _ in }
 
-        init() {
-
-        }
+        init() { }
 
         func execute(
             _ state: CurrentState<VState>,
