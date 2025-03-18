@@ -22,6 +22,7 @@ extension RemoteView {
 
     enum VAction: ActionProtocol {
         case load
+        case refresh(() -> Void)
     }
 
     enum VNotification: NotificationProtocol {

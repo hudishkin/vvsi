@@ -10,7 +10,6 @@ extension Never: NotificationProtocol { }
 
 public typealias StateUpdater<S: Sendable> = ((@MainActor @escaping (inout S) -> Void) async -> Void)
 public typealias CurrentState<S: Sendable> = () async -> S
-public typealias ReuseTrigger<A> = (A) -> Void
 
 public protocol ViewStateProtocol: AnyObject, ObservableObject where ObjectWillChangePublisher.Output == Void {
 

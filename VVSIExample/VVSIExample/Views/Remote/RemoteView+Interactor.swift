@@ -17,18 +17,41 @@ extension RemoteView {
         typealias N = VNotification
 
         let notifications: PassthroughSubject<N, Never> = .init()
-        var reuseTrigger: VVSI.ReuseTrigger<RemoteView.VAction> = { _ in }
 
         init() { }
 
         func execute(
-            _ state: CurrentState<VState>,
-            _ action: VAction,
-            _ updater: @escaping StateUpdater<VState>
+            _ state: @escaping CurrentState<S>,
+            _ action: A,
+            _ updater: @escaping StateUpdater<S>
         ) {
             switch action {
+            case .refresh(let action):
+                Task { [weak self] in
+                    guard let self else { return }
+
+                    await updater { state in
+                        state.items = []
+                    }
+
+                    try? await Task.sleep(for: .seconds(1))
+
+                    let products = try await self.fetchData()
+                    await updater { state in
+                        state.items = products.map { .init(
+                            id: $0.id,
+                            title: $0.title,
+                            image: $0.image)
+                        }
+                    }
+
+                    action()
+                }
+
             case .load:
-                Task.detached { [self] in
+                Task.detached { [weak self] in
+                    guard let self else { return }
+
                     do {
                         notifications.send(.event("Starting"))
                         let products = try await self.fetchData()

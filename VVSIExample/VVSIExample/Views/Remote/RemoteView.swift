@@ -51,6 +51,13 @@ struct RemoteView: View {
                 infoText = text
             }
         }
+        .refreshable {
+            await withCheckedContinuation { continuation in
+                viewState.trigger(.refresh({
+                    continuation.resume(returning: ())
+                }))
+            }
+        }
     }
 }
 
