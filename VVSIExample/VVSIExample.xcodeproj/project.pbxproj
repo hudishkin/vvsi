@@ -11,14 +11,30 @@
 		6D26CE772D62DDB200C76F8C /* VVSI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D26CE762D62DDB200C76F8C /* VVSI */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		6D4635F12D91CD4F00B78DA5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D26CDE62D61CAA400C76F8C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6D26CDED2D61CAA400C76F8C;
+			remoteInfo = VVSIExample;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		6D26CDEE2D61CAA400C76F8C /* VVSIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VVSIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D4635ED2D91CD4F00B78DA5 /* VVSIExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VVSIExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6D26CE142D61CAEF00C76F8C /* VVSIExample */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = VVSIExample;
+			sourceTree = "<group>";
+		};
+		6D4635EE2D91CD4F00B78DA5 /* VVSIExampleTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = VVSIExampleTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +49,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6D4635EA2D91CD4F00B78DA5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -40,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				6D26CE142D61CAEF00C76F8C /* VVSIExample */,
+				6D4635EE2D91CD4F00B78DA5 /* VVSIExampleTests */,
 				6D26CDEF2D61CAA400C76F8C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				6D26CDEE2D61CAA400C76F8C /* VVSIExample.app */,
+				6D4635ED2D91CD4F00B78DA5 /* VVSIExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +104,29 @@
 			productReference = 6D26CDEE2D61CAA400C76F8C /* VVSIExample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6D4635EC2D91CD4F00B78DA5 /* VVSIExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D4635F52D91CD4F00B78DA5 /* Build configuration list for PBXNativeTarget "VVSIExampleTests" */;
+			buildPhases = (
+				6D4635E92D91CD4F00B78DA5 /* Sources */,
+				6D4635EA2D91CD4F00B78DA5 /* Frameworks */,
+				6D4635EB2D91CD4F00B78DA5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6D4635F22D91CD4F00B78DA5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6D4635EE2D91CD4F00B78DA5 /* VVSIExampleTests */,
+			);
+			name = VVSIExampleTests;
+			packageProductDependencies = (
+			);
+			productName = VVSIExampleTests;
+			productReference = 6D4635ED2D91CD4F00B78DA5 /* VVSIExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -91,6 +139,10 @@
 				TargetAttributes = {
 					6D26CDED2D61CAA400C76F8C = {
 						CreatedOnToolsVersion = 16.2;
+					};
+					6D4635EC2D91CD4F00B78DA5 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 6D26CDED2D61CAA400C76F8C;
 					};
 				};
 			};
@@ -112,12 +164,20 @@
 			projectRoot = "";
 			targets = (
 				6D26CDED2D61CAA400C76F8C /* VVSIExample */,
+				6D4635EC2D91CD4F00B78DA5 /* VVSIExampleTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6D26CDEC2D61CAA400C76F8C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D4635EB2D91CD4F00B78DA5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -134,7 +194,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6D4635E92D91CD4F00B78DA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6D4635F22D91CD4F00B78DA5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6D26CDED2D61CAA400C76F8C /* VVSIExample */;
+			targetProxy = 6D4635F12D91CD4F00B78DA5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6D26CDFB2D61CAA600C76F8C /* Debug */ = {
@@ -311,6 +386,45 @@
 			};
 			name = Release;
 		};
+		6D4635F32D91CD4F00B78DA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = hh.VVSIExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VVSIExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VVSIExample";
+			};
+			name = Debug;
+		};
+		6D4635F42D91CD4F00B78DA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = hh.VVSIExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VVSIExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VVSIExample";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -328,6 +442,15 @@
 			buildConfigurations = (
 				6D26CDFE2D61CAA600C76F8C /* Debug */,
 				6D26CDFF2D61CAA600C76F8C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D4635F52D91CD4F00B78DA5 /* Build configuration list for PBXNativeTarget "VVSIExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D4635F32D91CD4F00B78DA5 /* Debug */,
+				6D4635F42D91CD4F00B78DA5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
