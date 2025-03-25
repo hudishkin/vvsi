@@ -16,7 +16,7 @@ import SwiftUI
 struct ListView: View {
 
     @StateObject
-    var viewState = ViewState<VState, VAction, VNotification>(.init(items: []), Interactor())
+    var viewState = ViewState(.init(items: []), Interactor())
 
     var body: some View {
 
@@ -70,15 +70,17 @@ extension ListView {
 
 extension ListView {
 
-    final class Interactor: ViewStateInteractor<VState, VAction, VNotification> {
+    final class Interactor: ViewStateInteractor {
+        
+        typealias S = VState
+        typealias A = VAction
+        typealias N = VNotification
 
-        override init() {
-            super.init()
-        }
+        init() { }
         
         override func execute(
-            _ action: VAction,
-            _ updater: @escaping StateUpdater<VState>
+            _ action: A,
+            _ updater: @escaping StateUpdater<S>
         ) {
             switch action {
             case .add:
