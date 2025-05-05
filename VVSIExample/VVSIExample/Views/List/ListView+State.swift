@@ -24,6 +24,8 @@ extension ListView {
         case random(Options)
     }
 
-    enum VNotification: NotificationProtocol { }
+    enum VNotification: NotificationProtocol {
+        case error(String)
+    }
 
 }

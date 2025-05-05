@@ -37,7 +37,6 @@ struct RemoteView: View {
                         Text(product.title)
                             .multilineTextAlignment(.leading)
                             .font(.caption2)
-
                     }
                 }
             }
