@@ -8,18 +8,6 @@
 import VVSI
 @preconcurrency import Combine
 
-class Dependencies {
-
-    class Service { }
-
-    var service: Service
-
-    init(service: Service) {
-        self.service = service
-    }
-
-}
-
 extension ListView {
 
     final class Interactor: ViewStateInteractorProtocol {
@@ -31,7 +19,7 @@ extension ListView {
         let notifications: PassthroughSubject<N, Never> = .init()
         let service: Dependencies.Service
 
-        init(dependencies: Dependencies) {
+        init(dependencies: Dependencies = .shared) {
             service = dependencies.service
         }
 
@@ -44,12 +32,13 @@ extension ListView {
             switch action {
             case .add:
                 Task.detached { [weak self] in
-                    await updater { state in
-                        state.items.append("New item")
+                    guard await state().items.count < 5 else {
+                        self?.notifications.send(.error("Max items count is 5"))
+                        return
                     }
 
-                    if await state().items.count < 5 {
-                        await self?.execute(state, action, updater)
+                    await updater { state in
+                        state.items.append("New item")
                     }
                 }
 
