@@ -16,7 +16,12 @@ struct ListView: View {
     }
 
     @StateObject
+    var viewState = ViewState(Interactor())
+
+    /*
+    @StateObject
     var viewState = ViewState(.init(), Interactor())
+    */
 
     @State
     private var alertType: AlertType? = nil

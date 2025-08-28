@@ -10,7 +10,7 @@ import VVSI
 
 extension ListView {
 
-    final class Interactor: ViewStateInteractorProtocol {
+    final class Interactor: ViewStateInteractorProtocol, InitialStateProtocol {
 
         typealias S = VState
         typealias A = VAction
@@ -18,9 +18,11 @@ extension ListView {
 
         let notifications: PassthroughSubject<N, Never> = .init()
         let service: Dependencies.Service
+        let initialState: ListView.VState
 
         init(dependencies: Dependencies = .shared) {
             service = dependencies.service
+            initialState = .init(items: ["initial item"])
         }
 
         @MainActor

@@ -41,3 +41,7 @@ public protocol ViewStateInteractorProtocol {
     )
 
 }
+
+public protocol InitialStateProtocol: ViewStateInteractorProtocol {
+    var initialState: S { get }
+}

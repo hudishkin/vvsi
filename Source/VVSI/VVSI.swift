@@ -24,6 +24,14 @@ public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewState
         self.notifications = interactor.notifications.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
+    public init(
+        _ interactor: Interactor
+    ) where Interactor: InitialStateProtocol {
+        self.state = interactor.initialState
+        self.interactor = interactor
+        self.notifications = interactor.notifications.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    }
+
     @MainActor
     public func trigger(_ action: Interactor.A) {
         interactor.execute(
