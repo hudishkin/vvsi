@@ -34,7 +34,9 @@ extension ListView {
             switch action {
             case .add:
                 Task.detached { [weak self] in
-                    guard await state().items.count < 5 else {
+                    guard
+                        let state = await state(),
+                        state.items.count < 5 else {
                         self?.notifications.send(.error("Max items count is 5"))
                         return
                     }

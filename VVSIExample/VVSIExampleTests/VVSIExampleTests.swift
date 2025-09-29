@@ -47,7 +47,8 @@ struct TestView {
                     await updater {
                         $0.value = value
                     }
-                    callback(await state())
+                    guard let state = await state() else { return }
+                    callback(state)
                 }
             }
         }

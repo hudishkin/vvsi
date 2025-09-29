@@ -8,8 +8,8 @@ extension Never: StateProtocol { }
 extension Never: ActionProtocol { }
 extension Never: NotificationProtocol { }
 
-public typealias StateUpdater<S: Sendable> = ((@MainActor @escaping (inout S) -> Void) async -> Void)
-public typealias CurrentState<S: Sendable> = @MainActor () async -> S
+public typealias StateUpdater<StateProtocol> = ((@MainActor @escaping (inout StateProtocol) -> Void) async -> Void)
+public typealias CurrentState<StateProtocol> = @MainActor () async -> StateProtocol?
 
 public protocol ViewStateProtocol: AnyObject, ObservableObject where ObjectWillChangePublisher.Output == Void {
 

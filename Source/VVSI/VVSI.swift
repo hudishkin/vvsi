@@ -11,8 +11,8 @@ public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewState
     private var interactor: Interactor
     
     @MainActor
-    private lazy var currentState: CurrentState<Interactor.S> = {
-        return self.state
+    private lazy var currentState: CurrentState<Interactor.S> = { [weak self] in
+        return self?.state
     }
 
     public init(
