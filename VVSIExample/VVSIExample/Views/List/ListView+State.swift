@@ -1,10 +1,3 @@
-//
-//  ListView+State.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import VVSI
 
 extension ListView {
@@ -24,8 +17,7 @@ extension ListView {
         case random(Options)
     }
 
-    enum VNotification: NotificationProtocol {
+    enum VEvent: EventProtocol {
         case error(String)
     }
-
 }

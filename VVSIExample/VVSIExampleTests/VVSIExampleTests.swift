@@ -22,7 +22,7 @@ struct TestView {
         case mutate(Int, (VState) -> Void)
     }
 
-    enum VNotification: NotificationProtocol {
+    enum VEvent: EventProtocol {
         case event(String)
     }
 
@@ -30,27 +30,20 @@ struct TestView {
 
         typealias S = VState
         typealias A = VAction
-        typealias N = VNotification
+        typealias N = VEvent
 
-        let notifications: PassthroughSubject<N, Never> = .init()
+        let events = EventPipe<N>()
 
         init() { }
 
-        func execute(
-            _ state: @escaping CurrentState<S>,
-            _ action: A,
-            _ updater: @escaping StateUpdater<S>
-        ) {
+        @MainActor
+        func reduce(_ state: inout S, _ action: A) -> Work<S>? {
             switch action {
             case .mutate(let value, let callback):
-                Task {
-                    await updater {
-                        $0.value = value
-                    }
-                    guard let state = await state() else { return }
-                    callback(state)
-                }
+                state.value = value
+                callback(state)
             }
+            return nil
         }
     }
 
@@ -60,43 +53,39 @@ struct TestView {
 struct VVSIExampleTests {
 
     @Test
-    func mutateState() async throws {
+    @MainActor
+    func mutateState() {
         let viewState = ViewState(TestView.VState.init(value: 0), TestView.Interactor())
 
         #expect(viewState.state.value == 0)
 
-        await viewState.trigger(.mutate(42, { after in
+        viewState.trigger(.mutate(42, { after in
             #expect(after.value == 42)
-
-            Task {
-                try await Task.sleep(nanoseconds: 100)
-                #expect(viewState.state.value == 0)
-            }
         }))
 
-        await viewState.trigger(.mutate(0, { after in
+        viewState.trigger(.mutate(0, { after in
             #expect(after.value == 0)
         }))
-        try await Task.sleep(nanoseconds: 100000)
         #expect(viewState.state.value == 0)
     }
 
 
     @Test
-    func publishState() async throws {
+    @MainActor
+    func publishState() {
         let viewState = ViewState(TestView.VState.init(value: 0), TestView.Interactor())
 
-        var values = Array(1...50)
+        let values = Array(1...50)
         var result = [Int]()
         let cancel = viewState.$state.sink { state in
             result.append(state.value)
         }
         for value in values {
-            await viewState.trigger(.mutate(value, { after in }))
+            viewState.trigger(.mutate(value, { _ in }))
         }
-        try await Task.sleep(nanoseconds: 10000000)
 
         #expect(values.count == result.count - 1)
+        _ = cancel
     }
 
 }

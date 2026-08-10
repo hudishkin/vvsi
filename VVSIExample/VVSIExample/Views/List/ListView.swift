@@ -1,13 +1,7 @@
-//
-//  ListView.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import SwiftUI
 import VVSI
 
+/// Local list feature: add / remove / random items with a hard limit via events.
 struct ListView: View {
 
     enum AlertType: Identifiable {
@@ -16,58 +10,50 @@ struct ListView: View {
     }
 
     @StateObject
-    var viewState = ViewState(Interactor())
-
-    /*
-    @StateObject
-    var viewState = ViewState(.init(), Interactor())
-    */
+    private var viewState = ViewState(Interactor())
 
     @State
-    private var alertType: AlertType? = nil
+    private var alertType: AlertType?
 
     var body: some View {
-
-        ForEach(viewState.state.items, id: \.self) { item in
-            Text(item)
-        }
-
-        HStack {
-            Button {
-                viewState.trigger(.add)
-            } label: {
-                Text("Add")
+        VStack(spacing: 16) {
+            ForEach(viewState.state.items, id: \.self) { item in
+                Text(item)
             }
 
-            Button {
-                viewState.trigger(.remove)
-            } label: {
-                Text("Remove")
-            }
-            Button {
-                viewState.trigger(.random(.init(count: Int.random(in: 1..<10), length: Int.random(in: 1..<5))))
-            } label: {
-                Text("Random")
+            HStack {
+                Button("Add") {
+                    viewState.trigger(.add)
+                }
+                Button("Remove") {
+                    viewState.trigger(.remove)
+                }
+                Button("Random") {
+                    viewState.trigger(.random(.init(
+                        count: Int.random(in: 1..<10),
+                        length: Int.random(in: 1..<5)
+                    )))
+                }
             }
         }
+        .padding()
         .alert(item: $alertType) { item in
             switch item {
-            case .error(let error):
+            case .error(let message):
                 Alert(
                     title: Text("Error"),
-                    message: Text(error),
+                    message: Text(message),
                     dismissButton: .default(Text("Ok"))
                 )
             }
         }
-        .onReceive(viewState.notifications) { notification in
-            switch notification {
+        .onReceive(viewState.events) { event in
+            switch event {
             case .error(let message):
                 alertType = .error(message)
             }
         }
     }
-
 }
 
 #Preview {

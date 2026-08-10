@@ -1,83 +1,65 @@
-//
-//  ListView+Interactor.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import VVSI
-@preconcurrency import Combine
 
 extension RemoteView {
 
-    final class Interactor: ViewStateInteractorProtocol {
+    final class Interactor: ViewStateInteractorProtocol, @unchecked Sendable {
 
         typealias S = VState
         typealias A = VAction
-        typealias N = VNotification
+        typealias N = VEvent
 
-        let notifications: PassthroughSubject<N, Never> = .init()
+        let events = EventPipe<N>()
 
-        init() { }
+        init() {}
 
-        func execute(
-            _ state: @escaping CurrentState<S>,
-            _ action: A,
-            _ updater: @escaping StateUpdater<S>
-        ) {
+        @MainActor
+        func reduce(_ state: inout S, _ action: A) -> Work<S>? {
             switch action {
-            case .refresh(let action):
-                Task { [weak self] in
-                    guard let self else { return }
+            case .refresh(let completion):
+                state.items = []
 
-                    await updater { state in
-                        state.items = []
-                    }
+                return Work(policy: .cancelPrevious("products")) { [self] _, updater in
+                    defer { completion() }
 
-                    try? await Task.sleep(for: .seconds(1))
-
-                    let products = try await self.fetchData()
-                    await updater { state in
-                        state.items = products.map { .init(
-                            id: $0.id,
-                            title: $0.title,
-                            image: $0.image)
+                    do {
+                        try await Task.sleep(for: .seconds(1))
+                        let products = try await fetchData()
+                        try Task.checkCancellation()
+                        await updater { state in
+                            state.items = products.map {
+                                .init(id: $0.id, title: $0.title, image: $0.image)
+                            }
                         }
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        events.send(.event("Refresh failed"))
                     }
-
-                    action()
                 }
 
             case .load:
-                Task.detached { [weak self] in
-                    guard let self else { return }
+                return Work(policy: .cancelPrevious("products")) { [self] _, updater in
+                    events.send(.event("Starting"))
 
                     do {
-                        notifications.send(.event("Starting"))
-                        let products = try await self.fetchData()
+                        let products = try await fetchData()
+                        try Task.checkCancellation()
                         await updater { state in
-                            state.items = products.map { .init(
-                                id: $0.id,
-                                title: $0.title,
-                                image: $0.image)
+                            state.items = products.map {
+                                .init(id: $0.id, title: $0.title, image: $0.image)
                             }
                         }
-
-                        notifications.send(.event("Finished"))
-
+                        events.send(.event("Finished"))
+                    } catch is CancellationError {
+                        return
                     } catch {
-                        notifications.send(.event("Finished with error"))
-
+                        events.send(.event("Finished with error"))
                         await updater { state in
                             state.items = []
                         }
                     }
-
                 }
             }
         }
     }
-
 }
-
-

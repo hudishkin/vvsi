@@ -1,19 +1,25 @@
-//
-//  ContentView.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        RemoteView()
-        // ListView()
+        NavigationStack {
+            List {
+                NavigationLink("List") {
+                    ListView()
+                }
+                NavigationLink("Remote") {
+                    RemoteView()
+                }
+                if #available(iOS 17, macOS 14, *) {
+                    NavigationLink("Observable List") {
+                        ObservableListView()
+                    }
+                }
+            }
+            .navigationTitle("VVSI Example")
+        }
     }
 }
-
 
 #Preview {
     ContentView()

@@ -5,7 +5,7 @@
 //  Created by Simon Hudishkin on 05.05.2025.
 //
 
-// INFO: - For example. In a real application, the code might be different
+/// Example DI container. Real apps usually use a proper dependency graph.
 class Dependencies {
 
     static let shared: Dependencies = .init(service: .init())

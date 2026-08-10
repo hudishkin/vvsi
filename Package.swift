@@ -6,6 +6,8 @@ import PackageDescription
 let package = Package(
     name: "VVSI",
     platforms: [
+        // Library minimum — keep broad for app consumers.
+        // Tests use Swift Testing and run on a modern host SDK (e.g. macOS 13+).
         .macOS(.v10_15), .iOS(.v13), .tvOS(.v13)
     ],
     products: [

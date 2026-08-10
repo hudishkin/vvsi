@@ -1,120 +1,155 @@
+# View · ViewState · Interactor (VVSI)
 
-# View - ViewState - Interactor (VVSI)
+VVSI is a thin unidirectional layer for SwiftUI: something between [TCA](https://github.com/pointfreeco/swift-composable-architecture) and free-form MVVM, without TCA ceremony.
 
-VVSI is an experimental (very) simple architecture for SwiftUI applications, representing something between [TCA](https://github.com/pointfreeco/swift-composable-architecture) (The Composable Architecture) and [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel). The library offers a structured and predictable approach to managing state and business logic, while maintaining ease of use.
+**View** renders state and sends actions. **ViewState** owns state. **Interactor** reduces synchronous actions immediately and returns optional async **Work**. One-shot UI (alerts, toasts) uses **events**, not state flags.
 
-## 📊 Architecture Diagram
+Current version: **0.1.0-alpha.1** (breaking vs 0.0.x — see [Migration](#migration-00x--010) and [Changelog](CHANGELOG.md)).
+
+## Architecture
 
 ![VVSI Architecture Diagram](scheme.png)
 
-## 🌟 Benefits
+```text
+View  --trigger(action)-->  ViewState  --reduce(&state, action)-->  Interactor
+  ^                           |                                      |
+  |                     published state                        Work<S>?
+  +----- onReceive(events) / eventStream <---- EventPipe <-----+
+```
 
-- **Separation of concerns** — clear separation of UI, state, and business logic
-- **Predictable data flow** — unidirectional data flow makes the application more stable
-- **Testability** — isolated components are easy to test
-- **Out-of-the-box asynchronicity** — support for asynchronous operations using Swift Concurrency
-- **Native SwiftUI integration** — works naturally with the SwiftUI system
+Synchronous actions complete before `trigger` returns and allocate no task. Returned `Work` runs as a tracked unstructured task with a selectable policy. Call `viewState.cancel()` to cooperatively cancel all in-flight work.
 
-## 📦 Installation
+## Why VVSI
+
+- Clear split: UI / state / side effects
+- Zero-task fast path for synchronous actions
+- Predictable async updates via `updater`
+- Easy to unit-test Interactor + ViewState
+- Async `Work` with policies and cooperative cancellation
+- Native SwiftUI (`ObservableObject`, `@StateObject`); experimental `@Observable` spike available
+
+### Compared with MVVM
+
+VVSI keeps the low ceremony and native SwiftUI integration of a small ViewModel, but makes the feature contract explicit:
+
+- user intent is represented by typed actions instead of arbitrary ViewModel methods;
+- synchronous state transitions happen in one `reduce` entry point;
+- async work has shared cancellation and concurrency policies;
+- one-shot events do not need to be stored as resettable state flags;
+- Interactor and ViewState can be tested without rendering a View.
+
+The trade-off is additional structure. A simple screen with a few independent properties may be clearer as plain MVVM.
+
+### Compared with TCA
+
+VVSI adopts unidirectional actions and reducer-like state changes, but intentionally omits most framework machinery:
+
+- no external dependencies beyond Apple frameworks;
+- no Store scoping, dependency system, navigation model, macros, or exhaustive TestStore;
+- synchronous actions do not allocate a task;
+- async `Work` updates state directly through a MainActor-isolated updater;
+- the API is small enough to understand from the core source files.
+
+This makes VVSI easier to introduce feature by feature, but less strict than TCA. In TCA, async work normally sends another action through the reducer; in VVSI, `Work` may update state directly. TCA is a better fit when exhaustive state-transition testing, deep composition, and standardized dependency management are more important than a minimal API.
+
+### When VVSI fits
+
+Choose VVSI when plain MVVM has become difficult to keep consistent, but adopting a full application architecture would be disproportionate. It is aimed at small and medium SwiftUI features that need predictable state, testable async work, and cancellation without a large framework surface.
+
+VVSI is not intended to replace TCA for every application. Large state trees, complex navigation, cross-feature composition, and organization-wide architecture enforcement are currently outside its scope.
+
+## Installation
 
 ### Swift Package Manager
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/username/VVSI.git", from: "0.0.5")
+    .package(url: "https://github.com/hudishkin/vvsi.git", exact: "0.1.0-alpha.1")
 ]
 ```
 
-## 🚀 How to Use
+### Cursor Skill
 
-VVSI consists of three main components:
+```bash
+mkdir -p skills
+cp -R path/to/vvsi/skills/vvsi skills/vvsi
+```
 
-1. **View** — responsible for UI and state display
-2. **ViewState** — stores the current state and processes actions
-3. **Interactor** — contains business logic and handles side effects
+See [`skills/vvsi`](skills/vvsi).
 
-### Example: Simple List
+## How to use
 
-#### 1. Create state and action components
+### 1. State, actions, events
 
 ```swift
-// ListView+State.swift
-
 extension ListView {
-
-    struct Options {
-        let count: Int
-        let length: Int
-    }
 
     struct VState: StateProtocol {
         var items: [String] = []
+        var isLoading = false
     }
 
     enum VAction: ActionProtocol {
         case add
         case remove
-        case random(Options)
+        case load
     }
 
-    enum VNotification: NotificationProtocol {
+    enum VEvent: EventProtocol {
         case error(String)
     }
 }
 ```
 
-#### 2. Implement the interactor to handle business logic
+### 2. Interactor
 
 ```swift
-// ListView+Interactor.swift
-
 extension ListView {
 
-    final class Interactor: ViewStateInteractorProtocol {
+    final class Interactor: ViewStateInteractorProtocol, InitialStateProtocol {
 
         typealias S = VState
         typealias A = VAction
-        typealias N = VNotification
+        typealias N = VEvent
 
-        let notifications: PassthroughSubject<N, Never> = .init()
-        let service: Dependencies.Service
-
-        init(dependencies: Dependencies = .shared) {
-            service = dependencies.service
-        }
+        let events = EventPipe<N>()
+        let initialState = VState(items: ["initial item"])
 
         @MainActor
-        func execute(
-            _ state: @escaping CurrentState<S>,
-            _ action: VAction,
-            _ updater: @escaping StateUpdater<S>
-        ) {
+        func reduce(_ state: inout S, _ action: A) -> Work<S>? {
             switch action {
             case .add:
-                Task.detached { [weak self] in
-                    guard await state().items.count < 5 else {
-                        self?.notifications.send(.error("Max items count is 5"))
-                        return
-                    }
-
-                    await updater { state in
-                        state.items.append("New item")
-                    }
+                guard state.items.count < 5 else {
+                    events.send(.error("Max items count is 5"))
+                    return nil
                 }
+                state.items.append("New item")
+                return nil
 
             case .remove:
-                Task.detached {
-                    await updater { state in
-                        if !state.items.isEmpty {
-                            state.items.removeLast()
-                        }
-                    }
+                if !state.items.isEmpty {
+                    state.items.removeLast()
                 }
-            case .random(let opt):
-                Task {
-                    let strings = (0..<opt.count).map { _ in randomString(length: opt.length) }
-                    await updater { state in
-                        state.items = strings
+                return nil
+
+            case .load:
+                state.isLoading = true
+                return Work(policy: .cancelPrevious("load")) { [events] _, updater in
+                    do {
+                        try await Task.sleep(for: .milliseconds(100))
+                        let items = ["Loaded"]
+                        try Task.checkCancellation()
+                        await updater {
+                            $0.items = items
+                            $0.isLoading = false
+                        }
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        await updater {
+                            $0.isLoading = false
+                        }
+                        events.send(.error(error.localizedDescription))
                     }
                 }
             }
@@ -123,11 +158,9 @@ extension ListView {
 }
 ```
 
-#### 3. Create a view that uses ViewState
+### 3. View
 
 ```swift
-// ListView.swift
-
 struct ListView: View {
 
     enum AlertType: Identifiable {
@@ -136,69 +169,103 @@ struct ListView: View {
     }
 
     @StateObject
-    var viewState = ViewState(.init(), Interactor())
+    private var viewState = ViewState(Interactor())
 
     @State
-    private var alertType: AlertType? = nil
+    private var alertType: AlertType?
 
     var body: some View {
-        ForEach(viewState.state.items, id: \.self) { item in
-            Text(item)
-        }
-
-        HStack {
-            Button {
-                viewState.trigger(.add)
-            } label: {
-                Text("Add")
+        VStack {
+            ForEach(viewState.state.items, id: \.self) { item in
+                Text(item)
             }
-
-            Button {
-                viewState.trigger(.remove)
-            } label: {
-                Text("Remove")
-            }
-            Button {
-                viewState.trigger(.random(.init(count: Int.random(in: 1..<10), length: Int.random(in: 1..<5))))
-            } label: {
-                Text("Random")
-            }
+            Button("Add") { viewState.trigger(.add) }
+            Button("Remove") { viewState.trigger(.remove) }
         }
         .alert(item: $alertType) { item in
             switch item {
-            case .error(let error):
+            case .error(let message):
                 Alert(
                     title: Text("Error"),
-                    message: Text(error),
+                    message: Text(message),
                     dismissButton: .default(Text("Ok"))
                 )
             }
         }
-        .onReceive(viewState.notifications) { notification in
-            switch notification {
+        .onReceive(viewState.events) { event in
+            switch event {
             case .error(let message):
                 alertType = .error(message)
             }
+        }
+        .onDisappear {
+            viewState.cancel()
         }
     }
 }
 ```
 
-## 🧩 Core Concepts
+Inject a fake Interactor in previews/tests: `ViewState(.init(...), FakeInteractor())`.
 
-- **StateProtocol** — protocol for state structures
-- **ActionProtocol** — protocol for action enumerations
-- **NotificationProtocol** — protocol for notifications from interactor to view
-- **ViewStateInteractorProtocol** — protocol for interactors handling business logic
+For async event consumption, request a stream when the consumer starts:
 
-## 📚 Complete Example
+```swift
+for await event in viewState.eventStream() {
+    // Handle event.
+}
+```
 
-A complete implementation example is available in the [VVSIExample](/VVSIExample) directory.
+Each call creates an independent subscription. The default buffer keeps only the newest pending event; pass a different `AsyncStream.Continuation.BufferingPolicy` when needed.
 
-## 📄 License
+## Testing
 
-This project is released under the MIT license. See [LICENSE](/LICENSE) for details.
+Drive `trigger` and assert on `state` / `events`. See [`Tests/VVSITests`](Tests/VVSITests/VVSITests.swift).
 
-## 👥 Contributors
+```bash
+swift test
+```
 
-We welcome your suggestions and contributions to the project! Create Issues and Pull Requests.
+## Migration 0.0.x → 0.1.0
+
+| Was | Now |
+|---|---|
+| `NotificationProtocol` / `VNotification` | `EventProtocol` / `VEvent` |
+| `notifications` / `PassthroughSubject` | `events` / `EventPipe` (+ `eventStream()`) |
+| `await state()` / `S?` | direct `inout state` in `reduce`; `await state()` → `S` inside `Work` |
+| `await updater { }` | direct mutation in `reduce`; `await updater { }` inside `Work` |
+| sync `execute` + manual `Task` | sync `reduce` returning optional `Work` |
+| — | `.concurrent`, `.cancelPrevious(key)`, `.dropWhileRunning(key)` |
+| — | `cancel()` stops all in-flight work |
+
+Long-running `Work` must cooperate with cancellation (`Task.checkCancellation()`, `try await Task.sleep`). Call `cancel()` from the View lifecycle when work should not outlive the screen.
+
+`reduce` is isolated to `MainActor`; `Work` is not. Networking and CPU-heavy processing therefore run away from the UI executor, while `state()` and `updater` safely hop to `MainActor`. Use `.cancelPrevious` when stale results must not win, or `.dropWhileRunning` to ignore duplicate requests.
+
+Keep feature state focused. Split large screens into smaller View/ViewState pairs, and keep high-frequency intermediate values such as drag or slider position in local `@State` until they need to become feature actions.
+
+## Experimental: ObservableViewState
+
+On iOS 17+ / macOS 14+, [`ObservableViewState`](Source/VVSI/ObservableViewState.swift) mirrors `ViewState` with the Observation framework (`@Observable`) instead of `ObservableObject`. Same Interactor contract. Prefer classic `ViewState` for production until the spike stabilizes.
+
+## Core concepts
+
+- **StateProtocol** — feature state (`Sendable`)
+- **ActionProtocol** — intents from the View
+- **EventProtocol** — `Sendable` one-shot signals from Interactor to View
+- **EventPipe** — `send` + Combine publisher + `AsyncStream`
+- **Work** — optional asynchronous continuation of a synchronous reduction
+- **WorkPolicy** — concurrent, replace-previous, or drop-duplicate execution
+- **ViewStateInteractorProtocol** — synchronous `reduce(&state, action) -> Work?`
+- **InitialStateProtocol** — Interactor provides `initialState`
+
+## Example app
+
+List + Remote (+ experimental Observable list): [`VVSIExample`](VVSIExample).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Contributing
+
+Issues and PRs are welcome.

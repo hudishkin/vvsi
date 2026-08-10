@@ -1,10 +1,3 @@
-//
-//  ListView+State.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import VVSI
 
 extension RemoteView {
@@ -22,11 +15,10 @@ extension RemoteView {
 
     enum VAction: ActionProtocol {
         case load
-        case refresh(() -> Void)
+        case refresh(@Sendable () -> Void)
     }
 
-    enum VNotification: NotificationProtocol {
+    enum VEvent: EventProtocol {
         case event(String)
     }
-
 }

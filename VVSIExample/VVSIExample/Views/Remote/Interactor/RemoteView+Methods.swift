@@ -1,20 +1,11 @@
-//
-//  RemoteView+Interactor.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import Foundation
 
 extension RemoteView.Interactor {
 
     func fetchData() async throws -> [Product] {
         let url = URL(string: "https://fakestoreapi.com/products")!
-
-        let data = try await URLSession.shared.data(from: url)
-        let products = try JSONDecoder().decode([Product].self, from: data.0)
-        return products
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([Product].self, from: data)
     }
 
     struct Product: Codable {
@@ -26,4 +17,3 @@ extension RemoteView.Interactor {
         let image: String
     }
 }
-

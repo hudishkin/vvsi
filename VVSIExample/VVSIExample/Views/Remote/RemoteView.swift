@@ -1,34 +1,26 @@
-//
-//  ListView.swift
-//  VVSIExample
-//
-//  Created by Simon Hudishkin on 16.02.2025.
-//
-
 import SwiftUI
 import VVSI
 
+/// Remote list feature: load products and pull-to-refresh; progress via events.
 struct RemoteView: View {
 
     @StateObject
-    var viewState = ViewState(.init(items: []), Interactor())
+    private var viewState = ViewState(.init(items: []), Interactor())
 
     @State
-    var infoText: String = ""
+    private var infoText = ""
 
     var body: some View {
-
         ScrollView {
             LazyVStack(alignment: .leading) {
                 Text(infoText)
                     .font(.caption2)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.secondary)
 
                 ForEach(viewState.state.items, id: \.id) { product in
-                    HStack() {
+                    HStack {
                         AsyncImage(url: URL(string: product.image)) { result in
-                            result
-                                .image?
+                            result.image?
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                         }
@@ -40,22 +32,26 @@ struct RemoteView: View {
                     }
                 }
             }
+            .padding()
         }
         .onAppear {
             viewState.trigger(.load)
         }
-        .onReceive(viewState.notifications) { notification in
-            switch notification {
+        .onReceive(viewState.events) { event in
+            switch event {
             case .event(let text):
                 infoText = text
             }
         }
         .refreshable {
             await withCheckedContinuation { continuation in
-                viewState.trigger(.refresh({
-                    continuation.resume(returning: ())
-                }))
+                viewState.trigger(.refresh {
+                    continuation.resume()
+                })
             }
+        }
+        .onDisappear {
+            viewState.cancel()
         }
     }
 }
