@@ -1,4 +1,4 @@
-# VVSI templates (0.1+)
+# VVSI templates (0.2+)
 
 Replace `FeatureName` with the screen name (e.g. `Profile`, `List`).
 

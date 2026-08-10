@@ -4,7 +4,7 @@ VVSI is a thin unidirectional layer for SwiftUI: something between [TCA](https:/
 
 **View** renders state and sends actions. **ViewState** owns state. **Interactor** reduces synchronous actions immediately and returns optional async **Work**. One-shot UI (alerts, toasts) uses **events**, not state flags.
 
-Current version: **0.1.0-alpha.1** (breaking vs 0.0.x — see [Migration](#migration-00x--010) and [Changelog](CHANGELOG.md)).
+Current version: **0.2.0-alpha.1** (breaking vs 0.0.x — see [Migration](#migration-00x--020) and [Changelog](CHANGELOG.md)).
 
 ## Architecture
 
@@ -64,7 +64,7 @@ VVSI is not intended to replace TCA for every application. Large state trees, co
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hudishkin/vvsi.git", exact: "0.1.0-alpha.1")
+    .package(url: "https://github.com/hudishkin/vvsi.git", exact: "0.2.0-alpha.1")
 ]
 ```
 
@@ -225,7 +225,7 @@ Drive `trigger` and assert on `state` / `events`. See [`Tests/VVSITests`](Tests/
 swift test
 ```
 
-## Migration 0.0.x → 0.1.0
+## Migration 0.0.x → 0.2.0
 
 | Was | Now |
 |---|---|

@@ -11,7 +11,7 @@ description: >-
 
 VVSI is a thin unidirectional layer for SwiftUI: **View** displays state and sends actions, **ViewState** owns state, and **Interactor** synchronously reduces actions and optionally returns async `Work`. Ephemeral UI (alerts, toasts) goes through **events**, not state flags.
 
-Requires VVSI **0.1+**.
+Requires VVSI **0.2+**.
 
 ## When scaffolding a feature
 

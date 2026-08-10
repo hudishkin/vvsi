@@ -6,7 +6,7 @@ The project follows [Semantic Versioning](https://semver.org/). During the `0.x`
 
 ## [Unreleased]
 
-## [0.1.0-alpha.1] - 2026-08-10
+## [0.2.0-alpha.1] - 2026-08-10
 
 ### Added
 
@@ -43,5 +43,5 @@ The project follows [Semantic Versioning](https://semver.org/). During the `0.x`
 - Classic `ViewState` publishes the entire feature state.
 - `ObservableViewState` remains experimental.
 
-[Unreleased]: https://github.com/hudishkin/vvsi/compare/0.1.0-alpha.1...HEAD
-[0.1.0-alpha.1]: https://github.com/hudishkin/vvsi/compare/0.0.5...0.1.0-alpha.1
+[Unreleased]: https://github.com/hudishkin/vvsi/compare/0.2.0-alpha.1...HEAD
+[0.2.0-alpha.1]: https://github.com/hudishkin/vvsi/compare/0.0.5...0.2.0-alpha.1
