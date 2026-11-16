@@ -1,8 +1,9 @@
 import SwiftUI
 import VVSI
 
-/// Experimental `@Observable` ViewState demo (iOS 17+ / macOS 14+).
+/// `@Observable` ViewState demo (iOS 17+ / macOS 14+).
 @available(iOS 17, macOS 14, *)
+@MainActor
 struct ObservableListView: View {
 
     enum AlertType: Identifiable {
@@ -21,8 +22,8 @@ struct ObservableListView: View {
             Text("ObservableViewState")
                 .font(.headline)
 
-            ForEach(viewState.state.items, id: \.self) { item in
-                Text(item)
+            ForEach(viewState.state.items) { item in
+                Text(item.title)
             }
 
             HStack {
@@ -46,9 +47,6 @@ struct ObservableListView: View {
             case .error(let message):
                 alertType = .error(message)
             }
-        }
-        .onDisappear {
-            viewState.cancel()
         }
     }
 }

@@ -4,7 +4,7 @@ extension RemoteView {
 
     struct VState: StateProtocol {
 
-        struct Product {
+        struct Product: Sendable {
             let id: Int
             let title: String
             let image: String
@@ -15,7 +15,7 @@ extension RemoteView {
 
     enum VAction: ActionProtocol {
         case load
-        case refresh(@Sendable () -> Void)
+        case refresh
     }
 
     enum VEvent: EventProtocol {

@@ -1,116 +1,57 @@
-import SwiftUI
 import Combine
+import Dispatch
 
 #if canImport(Observation)
 import Observation
 
-/// Experimental Observation-based mirror of `ViewState`.
-/// Prefer classic `ViewState` for production until this API stabilizes.
+/// Observation adapter using the same Work runtime as ViewState.
 @available(iOS 17, macOS 14, tvOS 17, *)
+@MainActor
 @Observable
-public final class ObservableViewState<Interactor: ViewStateInteractorProtocol>
-where Interactor.S: StateProtocol, Interactor.A: ActionProtocol, Interactor.N: EventProtocol {
+public final class ObservableViewState<Interactor: ViewStateInteractorProtocol> {
+    public let events: AnyPublisher<Interactor.N, Never>
 
-    @ObservationIgnored
-    private(set) public var events: AnyPublisher<Interactor.N, Never>
+    public private(set) var state: Interactor.S {
+        didSet { runner.record(state) }
+    }
 
-    public private(set) var state: Interactor.S
+    /// True while a non-concurrent Work occupies the slot.
+    public private(set) var isWorking = false
 
-    @ObservationIgnored
     private let interactor: Interactor
+    private let runner: WorkRunner<Interactor.S>
 
-    private struct RunningWork {
-        let key: String?
-        let task: Task<Void, Never>
-    }
+    var activeWorkCount: Int { runner.activeWorkCount }
 
-    @ObservationIgnored
-    private var nextWorkID: UInt64 = 0
-
-    @ObservationIgnored
-    private var runningWork: [UInt64: RunningWork] = [:]
-
-    @MainActor
-    var activeWorkCount: Int {
-        runningWork.count
-    }
-
-    public init(
-        _ state: Interactor.S,
-        _ interactor: Interactor
-    ) {
+    public init(_ state: Interactor.S, _ interactor: Interactor) {
         self.state = state
         self.interactor = interactor
+        self.runner = WorkRunner(state)
         self.events = interactor.events.publisher
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
-    }
-
-    public init(
-        _ interactor: Interactor
-    ) where Interactor: InitialStateProtocol {
-        self.state = interactor.initialState
-        self.interactor = interactor
-        self.events = interactor.events.publisher
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
-    @MainActor
-    public func trigger(_ action: Interactor.A) {
-        guard let work = interactor.reduce(&state, action) else {
-            return
+        runner.onSlotChange = { [weak self] busy in
+            guard let self, self.isWorking != busy else { return }
+            self.isWorking = busy
         }
-        start(work)
     }
 
-    @MainActor
-    private func start(_ work: Work<Interactor.S>) {
-        let key = work.policy.key
+    public convenience init(_ interactor: Interactor) where Interactor: InitialStateProtocol {
+        self.init(interactor.initialState, interactor)
+    }
 
-        switch work.policy {
-        case .concurrent:
-            break
-        case .cancelPrevious:
-            let matchingIDs = runningWork.compactMap { id, running in
-                running.key == key ? id : nil
-            }
-            for id in matchingIDs {
-                runningWork[id]?.task.cancel()
-                runningWork[id] = nil
-            }
-        case .dropWhileRunning:
-            guard !runningWork.values.contains(where: { $0.key == key }) else {
-                return
-            }
-        }
-
-        let id = nextWorkID
-        nextWorkID &+= 1
-
-        let task = Task { @MainActor [weak self] in
+    @discardableResult
+    public func trigger(_ action: Interactor.A) -> WorkHandle? {
+        guard let work = interactor.reduce(&state, action) else { return nil }
+        return runner.start(work) { [weak self] update in
             guard let self else { return }
-            defer { self.runningWork[id] = nil }
-            guard !Task.isCancelled else { return }
-
-            await work.operation(
-                { self.state },
-                { [weak self] update in
-                    guard let self, !Task.isCancelled else { return }
-                    update(&self.state)
-                }
-            )
+            update(&self.state)
         }
-        runningWork[id] = RunningWork(key: key, task: task)
     }
 
-    /// Cancels all in-flight work (e.g. on disappear).
-    @MainActor
     public func cancel() {
-        for running in runningWork.values {
-            running.task.cancel()
-        }
-        runningWork.removeAll()
+        runner.cancel()
+        interactor.didCancel(&state)
     }
 
     public func eventStream(

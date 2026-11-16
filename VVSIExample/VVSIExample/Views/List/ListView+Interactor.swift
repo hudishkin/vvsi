@@ -9,12 +9,10 @@ extension ListView {
         typealias N = VEvent
 
         let events = EventPipe<N>()
-        let service: Dependencies.Service
         let initialState: VState
 
-        init(dependencies: Dependencies = .shared) {
-            service = dependencies.service
-            initialState = .init(items: ["initial item"])
+        init() {
+            initialState = .init(items: [.init(title: "initial item")])
         }
 
         @MainActor
@@ -25,7 +23,7 @@ extension ListView {
                     events.send(.error("Max items count is 5"))
                     return nil
                 }
-                state.items.append("New item")
+                state.items.append(.init(title: "New item"))
 
             case .remove:
                 if !state.items.isEmpty {
@@ -34,7 +32,7 @@ extension ListView {
 
             case .random(let options):
                 state.items = (0..<options.count).map { _ in
-                    randomString(length: options.length)
+                    .init(title: randomString(length: options.length))
                 }
             }
             return nil

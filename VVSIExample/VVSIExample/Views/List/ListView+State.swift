@@ -1,3 +1,4 @@
+import Foundation
 import VVSI
 
 extension ListView {
@@ -8,7 +9,12 @@ extension ListView {
     }
 
     struct VState: StateProtocol {
-        var items: [String] = []
+        struct Item: Identifiable, Sendable {
+            let id = UUID()
+            let title: String
+        }
+
+        var items: [Item] = []
     }
 
     enum VAction: ActionProtocol {

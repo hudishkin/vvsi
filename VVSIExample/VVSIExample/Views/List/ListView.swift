@@ -2,6 +2,7 @@ import SwiftUI
 import VVSI
 
 /// Local list feature: add / remove / random items with a hard limit via events.
+@MainActor
 struct ListView: View {
 
     enum AlertType: Identifiable {
@@ -17,8 +18,8 @@ struct ListView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            ForEach(viewState.state.items, id: \.self) { item in
-                Text(item)
+            ForEach(viewState.state.items) { item in
+                Text(item.title)
             }
 
             HStack {

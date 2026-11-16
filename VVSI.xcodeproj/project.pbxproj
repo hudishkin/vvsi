@@ -1,0 +1,651 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33E301DF52302F9CEFC7B637 /* VVSI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 722D3DCD713AB6C20ECAA7D7 /* VVSI.framework */; };
+		41A8CC561F060658E31E7F27 /* WorkRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534BF183CC8083159FEC9826 /* WorkRunner.swift */; };
+		4879CE7F73DB57DE73BDD250 /* WorkHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893525FEC28FD8078588B76F /* WorkHandle.swift */; };
+		5AF4FF7CD34DCC1A96DC11E3 /* ObservableViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959801E7C822FFAF0F99E10D /* ObservableViewState.swift */; };
+		758223DE1E4925FB50D811E4 /* WorkLifetimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497E5D01054FEB333048ABFD /* WorkLifetimeTests.swift */; };
+		86AF8398FDA286AF5B997310 /* VVSI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE1B3B71323AC6CE6E2DF6F /* VVSI.swift */; };
+		9255FCCB8A5B0B1134D97BC2 /* VVSITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9B5CA78A3A6B123BC5BE8 /* VVSITests.swift */; };
+		934228C9535BF1286C2CD17E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444110B41957574F4E20B8E /* Protocols.swift */; };
+		F033E11AE0C491AE39EA1B02 /* EventPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A247DF8CFA4EC628D1391DD /* EventPipe.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F754ECBA37A8D8D202FAA023 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DDF96A60384A9C571D1EB72 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6966907D6399F6CC628E4BAE;
+			remoteInfo = VVSI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		29DA1032A1FA7E35E3FAFCBB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F8080759ABDE601572398F2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1DE386A5BBD73A7689F296C4 /* VVSITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VVSITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		497E5D01054FEB333048ABFD /* WorkLifetimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkLifetimeTests.swift; sourceTree = "<group>"; };
+		534BF183CC8083159FEC9826 /* WorkRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkRunner.swift; sourceTree = "<group>"; };
+		5A247DF8CFA4EC628D1391DD /* EventPipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPipe.swift; sourceTree = "<group>"; };
+		722D3DCD713AB6C20ECAA7D7 /* VVSI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVSI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		893525FEC28FD8078588B76F /* WorkHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkHandle.swift; sourceTree = "<group>"; };
+		8CE1B3B71323AC6CE6E2DF6F /* VVSI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VVSI.swift; sourceTree = "<group>"; };
+		91731D382E528F03A27E047D /* VVSITests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "VVSITests-Info.plist"; sourceTree = "<group>"; };
+		959801E7C822FFAF0F99E10D /* ObservableViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewState.swift; sourceTree = "<group>"; };
+		A444110B41957574F4E20B8E /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		A9F9B5CA78A3A6B123BC5BE8 /* VVSITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VVSITests.swift; sourceTree = "<group>"; };
+		C51CD1A66837102881B96B89 /* VVSI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "VVSI-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A487A4768C912197848CFF7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33E301DF52302F9CEFC7B637 /* VVSI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D694DE738052224F80F4FC50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		397AB1FA1D4BC6E1EBA6E503 /* VVSI */ = {
+			isa = PBXGroup;
+			children = (
+				5A247DF8CFA4EC628D1391DD /* EventPipe.swift */,
+				959801E7C822FFAF0F99E10D /* ObservableViewState.swift */,
+				A444110B41957574F4E20B8E /* Protocols.swift */,
+				8CE1B3B71323AC6CE6E2DF6F /* VVSI.swift */,
+				893525FEC28FD8078588B76F /* WorkHandle.swift */,
+				534BF183CC8083159FEC9826 /* WorkRunner.swift */,
+			);
+			path = VVSI;
+			sourceTree = "<group>";
+		};
+		59C0D569C484AC4506C7EBB3 /* VVSITests */ = {
+			isa = PBXGroup;
+			children = (
+				A9F9B5CA78A3A6B123BC5BE8 /* VVSITests.swift */,
+				497E5D01054FEB333048ABFD /* WorkLifetimeTests.swift */,
+			);
+			path = VVSITests;
+			sourceTree = "<group>";
+		};
+		610AFC736D1EB538BA3AD815 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				397AB1FA1D4BC6E1EBA6E503 /* VVSI */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		6EC32228AE43DEBEC020835E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				722D3DCD713AB6C20ECAA7D7 /* VVSI.framework */,
+				1DE386A5BBD73A7689F296C4 /* VVSITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8917A780B6A65D9A6612AADF = {
+			isa = PBXGroup;
+			children = (
+				6EC32228AE43DEBEC020835E /* Products */,
+				CFC16B533B7C2034E3B168A9 /* Project */,
+			);
+			sourceTree = "<group>";
+		};
+		A9703BC24728A6B826430C79 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				59C0D569C484AC4506C7EBB3 /* VVSITests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		B8DCE2FA943D0C9B8D4D0124 /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				C51CD1A66837102881B96B89 /* VVSI-Info.plist */,
+				91731D382E528F03A27E047D /* VVSITests-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		CFC16B533B7C2034E3B168A9 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				DCB853930BE2C022231A1768 /* Derived */,
+				610AFC736D1EB538BA3AD815 /* Source */,
+				A9703BC24728A6B826430C79 /* Tests */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		DCB853930BE2C022231A1768 /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				B8DCE2FA943D0C9B8D4D0124 /* InfoPlists */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5470018DC306A1A8335CC71C /* VVSITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10ABE80043644EEF890C0458 /* Build configuration list for PBXNativeTarget "VVSITests" */;
+			buildPhases = (
+				3D2C91ACF7AF64676B2E4CA0 /* Sources */,
+				70D7E2420832A611FDF929AE /* Resources */,
+				8A487A4768C912197848CFF7 /* Frameworks */,
+				3F8080759ABDE601572398F2 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				08431299F96F3A74CDF98B98 /* PBXTargetDependency */,
+			);
+			name = VVSITests;
+			packageProductDependencies = (
+			);
+			productName = VVSITests;
+			productReference = 1DE386A5BBD73A7689F296C4 /* VVSITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6966907D6399F6CC628E4BAE /* VVSI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A407F28F2D698E86E39CA6F /* Build configuration list for PBXNativeTarget "VVSI" */;
+			buildPhases = (
+				6957E209E5724375C2A814AD /* Sources */,
+				D82DE21A21C3F2DABE0149F0 /* Resources */,
+				D694DE738052224F80F4FC50 /* Frameworks */,
+				29DA1032A1FA7E35E3FAFCBB /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VVSI;
+			packageProductDependencies = (
+			);
+			productName = VVSI;
+			productReference = 722D3DCD713AB6C20ECAA7D7 /* VVSI.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3DDF96A60384A9C571D1EB72 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 861E57E507F19F46206321D7 /* Build configuration list for PBXProject "VVSI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8917A780B6A65D9A6612AADF;
+			productRefGroup = 6EC32228AE43DEBEC020835E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6966907D6399F6CC628E4BAE /* VVSI */,
+				5470018DC306A1A8335CC71C /* VVSITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		70D7E2420832A611FDF929AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82DE21A21C3F2DABE0149F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D2C91ACF7AF64676B2E4CA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9255FCCB8A5B0B1134D97BC2 /* VVSITests.swift in Sources */,
+				758223DE1E4925FB50D811E4 /* WorkLifetimeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6957E209E5724375C2A814AD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F033E11AE0C491AE39EA1B02 /* EventPipe.swift in Sources */,
+				5AF4FF7CD34DCC1A96DC11E3 /* ObservableViewState.swift in Sources */,
+				934228C9535BF1286C2CD17E /* Protocols.swift in Sources */,
+				86AF8398FDA286AF5B997310 /* VVSI.swift in Sources */,
+				4879CE7F73DB57DE73BDD250 /* WorkHandle.swift in Sources */,
+				41A8CC561F060658E31E7F27 /* WorkRunner.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		08431299F96F3A74CDF98B98 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = VVSI;
+			target = 6966907D6399F6CC628E4BAE /* VVSI */;
+			targetProxy = F754ECBA37A8D8D202FAA023 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		13CA58FD1297F13A3D721C8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/VVSITests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = VVSITests;
+				PRODUCT_NAME = VVSITests;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		45D15188DE7F689A35AA7F61 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Derived/InfoPlists/VVSI-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = VVSI;
+				PRODUCT_NAME = VVSI;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		4A9F24082FBB430D06FFBAC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				INFOPLIST_FILE = "Derived/InfoPlists/VVSITests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-L$(DT_TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = VVSITests;
+				PRODUCT_NAME = VVSITests;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		60EDDF41C137EEC2E06F3CC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SWIFT_PACKAGE=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-package-name",
+					VVSI,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					SWIFT_PACKAGE,
+				);
+				SWIFT_SUPPRESS_WARNINGS = YES;
+				SWIFT_VERSION = 5;
+				USE_HEADERMAP = NO;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		83F3C091CDDB8667301832F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Derived/InfoPlists/VVSI-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = VVSI;
+				PRODUCT_NAME = VVSI;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx watchos watchsimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2,3,4,6,7";
+				TVOS_DEPLOYMENT_TARGET = 15.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
+		9C28D100AD4DF3B23FD31DD6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"SWIFT_PACKAGE=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-package-name",
+					VVSI,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					SWIFT_PACKAGE,
+				);
+				SWIFT_SUPPRESS_WARNINGS = YES;
+				SWIFT_VERSION = 5;
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		10ABE80043644EEF890C0458 /* Build configuration list for PBXNativeTarget "VVSITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A9F24082FBB430D06FFBAC4 /* Debug */,
+				13CA58FD1297F13A3D721C8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		861E57E507F19F46206321D7 /* Build configuration list for PBXProject "VVSI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C28D100AD4DF3B23FD31DD6 /* Debug */,
+				60EDDF41C137EEC2E06F3CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A407F28F2D698E86E39CA6F /* Build configuration list for PBXNativeTarget "VVSI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45D15188DE7F689A35AA7F61 /* Debug */,
+				83F3C091CDDB8667301832F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3DDF96A60384A9C571D1EB72 /* Project object */;
+}
