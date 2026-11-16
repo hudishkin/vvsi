@@ -100,7 +100,7 @@ To use the unreleased API shown below, add this checkout as a local package:
 dependencies: [.package(path: "../vvsi")]
 ```
 
-The library supports Swift 5.9+, iOS 13+, macOS 10.15+, and tvOS 13+. The SwiftUI examples use iOS/tvOS 16+ and macOS 13+ APIs. Running the test suite requires a Swift 6+ toolchain and macOS 13+; Observation tests additionally require macOS 14+.
+The library supports Swift 5.9+, iOS 13+, macOS 10.15+, and tvOS 13+, in either the Swift 5 or Swift 6 language mode. CI verifies Swift 6.0+ (Xcode 16+); Swift 5.9 and 5.10 are not tested. The SwiftUI examples use iOS/tvOS 16+ and macOS 13+ APIs. Running the test suite requires a Swift 6+ toolchain and macOS 13+; Observation tests additionally require macOS 14+.
 
 ### Cursor Skill
 

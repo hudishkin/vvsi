@@ -41,18 +41,19 @@ jobs:
         run: swift test -Xswiftc -swift-version -Xswiftc 6 -Xswiftc -enable-upcoming-feature -Xswiftc NonisolatedNonsendingByDefault -Xswiftc -warnings-as-errors
 
   minimum-toolchain:
-    name: Swift 5.9 consumer build
-    # Xcode 15.0.1 supplies Swift 5.9 and its matching SDK. Revisit this job before
-    # macos-14 retires on 2026-11-02; do not silently replace the minimum toolchain.
-    runs-on: macos-14
+    name: Oldest available toolchain build
+    # Package.swift declares Swift 5.9, but GitHub-hosted runners no longer
+    # provide Xcode 15. Xcode 16.0 (Swift 6.0) is the oldest toolchain CI can
+    # build with; Swift 5.9 and 5.10 are not verified.
+    runs-on: macos-15
     timeout-minutes: 10
     env:
-      DEVELOPER_DIR: /Applications/Xcode_15.0.1.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_16.0.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
       - run: swift --version
-      # Swift Testing needs Swift 6; the library itself supports Swift 5.9.
-      - run: swift build -c release -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+      - run: swift build -c release -Xswiftc -warnings-as-errors
+      - run: swift build -c release -Xswiftc -swift-version -Xswiftc 5 -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
 
   platforms:
     name: Minimum deployment / ${{ matrix.sdk }}

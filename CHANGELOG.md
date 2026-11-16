@@ -19,7 +19,7 @@ The project follows [Semantic Versioning](https://semver.org/). During the `0.x`
 - `isWorking` on both adapters: a runtime-owned loading indicator. It turns on in `trigger`, stays on while one `Work` replaces another, and turns off on completion or any cancellation, including `.task` cancellation and handles cancelled off the main thread. `.concurrent` work is excluded.
 - Optional `Interactor.didCancel` resets non-loading state after `viewState.cancel()`, so screens do not need a dummy `.stop` action.
 - Shared lifecycle regression tests for both observation adapters and injectable remote example requests.
-- CI checks for Swift 5/6 language modes, Swift 5.9 consumer builds, minimum platform deployment targets, and executed example tests.
+- CI checks for Swift 5/6 language modes, a build on the oldest available toolchain (Xcode 16.0), minimum platform deployment targets, and executed example tests. Swift 5.9 and 5.10 remain supported but are no longer verified in CI.
 
 ### Changed
 
