@@ -1,103 +1,56 @@
-import SwiftUI
 import Combine
+import Dispatch
 
-public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewStateProtocol
-where Interactor.S: StateProtocol, Interactor.A: ActionProtocol, Interactor.N: EventProtocol {
-
-    private(set) public var events: AnyPublisher<Interactor.N, Never>
+/// MainActor-owned feature state with Combine/ObservableObject observation.
+@MainActor
+public final class ViewState<Interactor: ViewStateInteractorProtocol>: ViewStateProtocol {
+    public let events: AnyPublisher<Interactor.N, Never>
 
     @Published
-    private(set) public var state: Interactor.S
+    public private(set) var state: Interactor.S {
+        didSet { runner.record(state) }
+    }
+
+    /// True while a non-concurrent Work occupies the slot.
+    @Published
+    public private(set) var isWorking = false
 
     private let interactor: Interactor
-    private struct RunningWork {
-        let key: String?
-        let task: Task<Void, Never>
-    }
-    private var nextWorkID: UInt64 = 0
-    private var runningWork: [UInt64: RunningWork] = [:]
+    private let runner: WorkRunner<Interactor.S>
 
-    @MainActor
-    var activeWorkCount: Int {
-        runningWork.count
-    }
+    var activeWorkCount: Int { runner.activeWorkCount }
 
-    public init(
-        _ state: Interactor.S,
-        _ interactor: Interactor
-    ) {
+    public init(_ state: Interactor.S, _ interactor: Interactor) {
         self.state = state
         self.interactor = interactor
+        self.runner = WorkRunner(state)
         self.events = interactor.events.publisher
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
-    }
-
-    public init(
-        _ interactor: Interactor
-    ) where Interactor: InitialStateProtocol {
-        self.state = interactor.initialState
-        self.interactor = interactor
-        self.events = interactor.events.publisher
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-
-    @MainActor
-    public func trigger(_ action: Interactor.A) {
-        guard let work = interactor.reduce(&state, action) else {
-            return
+        runner.onSlotChange = { [weak self] busy in
+            guard let self, self.isWorking != busy else { return }
+            self.isWorking = busy
         }
-        start(work)
     }
 
-    @MainActor
-    private func start(_ work: Work<Interactor.S>) {
-        let key = work.policy.key
+    public convenience init(_ interactor: Interactor) where Interactor: InitialStateProtocol {
+        self.init(interactor.initialState, interactor)
+    }
 
-        switch work.policy {
-        case .concurrent:
-            break
-        case .cancelPrevious:
-            let matchingIDs = runningWork.compactMap { id, running in
-                running.key == key ? id : nil
-            }
-            for id in matchingIDs {
-                runningWork[id]?.task.cancel()
-                runningWork[id] = nil
-            }
-        case .dropWhileRunning:
-            guard !runningWork.values.contains(where: { $0.key == key }) else {
-                return
-            }
-        }
-
-        let id = nextWorkID
-        nextWorkID &+= 1
-
-        let task = Task { @MainActor [weak self] in
+    /// Applies the reduction before returning. Synchronous actions create no task.
+    @discardableResult
+    public func trigger(_ action: Interactor.A) -> WorkHandle? {
+        guard let work = interactor.reduce(&state, action) else { return nil }
+        return runner.start(work) { [weak self] update in
             guard let self else { return }
-            defer { self.runningWork[id] = nil }
-            guard !Task.isCancelled else { return }
-
-            await work.operation(
-                { self.state },
-                { [weak self] update in
-                    guard let self, !Task.isCancelled else { return }
-                    update(&self.state)
-                }
-            )
+            update(&self.state)
         }
-        runningWork[id] = RunningWork(key: key, task: task)
     }
 
-    /// Cancels all in-flight work (e.g. on disappear).
-    @MainActor
+    /// Invalidates all work, then asks the Interactor to clear leftover flags.
     public func cancel() {
-        for running in runningWork.values {
-            running.task.cancel()
-        }
-        runningWork.removeAll()
+        runner.cancel()
+        interactor.didCancel(&state)
     }
 
     public func eventStream(

@@ -1,7 +1,8 @@
 import SwiftUI
 import VVSI
 
-/// Remote list feature: load products and pull-to-refresh; progress via events.
+/// Remote list feature: load products and pull-to-refresh; awaitable work.
+@MainActor
 struct RemoteView: View {
 
     @StateObject
@@ -13,6 +14,8 @@ struct RemoteView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
+                if viewState.isWorking { ProgressView() }
+
                 Text(infoText)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -34,8 +37,8 @@ struct RemoteView: View {
             }
             .padding()
         }
-        .onAppear {
-            viewState.trigger(.load)
+        .task {
+            await viewState.trigger(.load)?.finish()
         }
         .onReceive(viewState.events) { event in
             switch event {
@@ -44,11 +47,7 @@ struct RemoteView: View {
             }
         }
         .refreshable {
-            await withCheckedContinuation { continuation in
-                viewState.trigger(.refresh {
-                    continuation.resume()
-                })
-            }
+            await viewState.trigger(.refresh)?.finish()
         }
         .onDisappear {
             viewState.cancel()

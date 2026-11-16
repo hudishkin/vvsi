@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    tags: ['*']
   pull_request:
   workflow_dispatch:
 
@@ -16,38 +16,99 @@ concurrency:
 
 jobs:
   swift-package:
-    name: Swift Package
+    name: Swift ${{ matrix.language }} / Xcode ${{ matrix.xcode }}
     runs-on: macos-15
     timeout-minutes: 15
-
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - xcode: '16.4'
+            language: '5'
+          - xcode: '26.2'
+            language: '6'
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - name: Test with complete concurrency checks
+        run: swift test -Xswiftc -swift-version -Xswiftc ${{ matrix.language }} -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+      - name: Build release
+        run: swift build -c release -Xswiftc -swift-version -Xswiftc ${{ matrix.language }} -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+      - name: Test upcoming async isolation rules
+        if: matrix.language == '6'
+        run: swift test -Xswiftc -swift-version -Xswiftc 6 -Xswiftc -enable-upcoming-feature -Xswiftc NonisolatedNonsendingByDefault -Xswiftc -warnings-as-errors
 
-      - name: Show Swift version
-        run: swift --version
+  minimum-toolchain:
+    name: Swift 5.9 consumer build
+    # Xcode 15.0.1 supplies Swift 5.9 and its matching SDK. Revisit this job before
+    # macos-14 retires on 2026-11-02; do not silently replace the minimum toolchain.
+    runs-on: macos-14
+    timeout-minutes: 10
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.0.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      # Swift Testing needs Swift 6; the library itself supports Swift 5.9.
+      - run: swift build -c release -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
 
-      - name: Run tests with strict concurrency
-        run: swift test -Xswiftc -strict-concurrency=complete
-
-      - name: Build release configuration
-        run: swift build --configuration release
+  platforms:
+    name: Minimum deployment / ${{ matrix.sdk }}
+    runs-on: macos-15
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - sdk: iphoneos
+            target: arm64-apple-ios13.0
+          - sdk: appletvos
+            target: arm64-apple-tvos13.0
+          - sdk: macosx
+            target: x86_64-apple-macosx10.15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile library at its minimum deployment target
+        run: >-
+          xcrun swiftc -parse-as-library -emit-module -module-name VVSI
+          -sdk "$(xcrun --sdk ${{ matrix.sdk }} --show-sdk-path)"
+          -target ${{ matrix.target }}
+          -swift-version 5 -strict-concurrency=complete -warnings-as-errors
+          -emit-module-path "$RUNNER_TEMP/VVSI.swiftmodule" Source/VVSI/*.swift
 
   example:
-    name: Example App
+    name: Example App tests
     runs-on: macos-15
     timeout-minutes: 20
-
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build app and test target
+      - uses: actions/checkout@v4
+      - name: Choose an available iPhone simulator
+        run: |
+          device_id=$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          matches = [d["udid"] for runtime, group in devices.items()
+                     if runtime.endswith("iOS-18-5") for d in group
+                     if d["name"].startswith("iPhone") and d["isAvailable"]]
+          if not matches:
+              raise SystemExit("No iOS 18.5 iPhone simulator available")
+          print(matches[0])')
+          echo "SIMULATOR_ID=$device_id" >> "$GITHUB_ENV"
+      - name: Run app tests
         working-directory: VVSIExample
         run: >-
-          xcodebuild
-          -project VVSIExample.xcodeproj
-          -scheme VVSIExample
-          -destination "generic/platform=iOS Simulator"
-          CODE_SIGNING_ALLOWED=NO
-          build-for-testing
+          xcodebuild -project VVSIExample.xcodeproj -scheme VVSIExample
+          -destination "platform=iOS Simulator,id=$SIMULATOR_ID"
+          -resultBundlePath "$RUNNER_TEMP/ExampleTests.xcresult"
+          CODE_SIGNING_ALLOWED=NO test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: example-test-results
+          path: ${{ runner.temp }}/ExampleTests.xcresult

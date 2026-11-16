@@ -1,4 +1,4 @@
-# VVSI templates (0.2+)
+# VVSI templates (unreleased after 0.2.0-alpha.1)
 
 Replace `FeatureName` with the screen name (e.g. `Profile`, `List`).
 
@@ -11,7 +11,6 @@ extension FeatureName {
 
     struct VState: StateProtocol {
         var title: String = ""
-        var isLoading: Bool = false
     }
 
     enum VAction: ActionProtocol {
@@ -24,6 +23,8 @@ extension FeatureName {
     }
 }
 ```
+
+No `isLoading` field: the View reads `viewState.isWorking`.
 
 ## FeatureName+Interactor.swift
 
@@ -46,22 +47,15 @@ extension FeatureName {
         func reduce(_ state: inout S, _ action: A) -> Work<S>? {
             switch action {
             case .onAppear, .reload:
-                state.isLoading = true
-
-                return Work(policy: .cancelPrevious("load")) { [events] _, updater in
+                return Work { [events] _, updater in
                     do {
                         // let data = try await fetch...
                         try Task.checkCancellation()
                         await updater { state in
                             state.title = "Loaded"
-                            state.isLoading = false
                         }
-                    } catch is CancellationError {
-                        return
                     } catch {
-                        await updater { state in
-                            state.isLoading = false
-                        }
+                        guard !Task.isCancelled else { return }
                         events.send(.error(error.localizedDescription))
                     }
                 }
@@ -80,7 +74,7 @@ final class Interactor: ViewStateInteractorProtocol, InitialStateProtocol {
     typealias N = VEvent
 
     let events = EventPipe<N>()
-    let initialState = VState(title: "Hello", isLoading: false)
+    let initialState = VState(title: "Hello")
 
     // reduce(...) as above
 }
@@ -92,6 +86,7 @@ final class Interactor: ViewStateInteractorProtocol, InitialStateProtocol {
 import SwiftUI
 import VVSI
 
+@MainActor
 struct FeatureName: View {
 
     enum AlertType: Identifiable {
@@ -99,16 +94,18 @@ struct FeatureName: View {
         case error(String)
     }
 
-    @StateObject
-    private var viewState = ViewState(.init(), Interactor())
-    // or: ViewState(Interactor()) when using InitialStateProtocol
+    // iOS 17+ / macOS 14+ / tvOS 17+.
+    @State
+    private var viewState = ObservableViewState(.init(), Interactor())
+    // or: ObservableViewState(Interactor()) when using InitialStateProtocol
+    // Older targets: @StateObject private var viewState = ViewState(.init(), Interactor())
 
     @State
     private var alertType: AlertType?
 
     var body: some View {
         VStack {
-            if viewState.state.isLoading {
+            if viewState.isWorking {
                 ProgressView()
             }
             Text(viewState.state.title)
@@ -116,8 +113,8 @@ struct FeatureName: View {
                 viewState.trigger(.reload)
             }
         }
-        .onAppear {
-            viewState.trigger(.onAppear)
+        .task {
+            await viewState.trigger(.onAppear)?.finish()
         }
         .alert(item: $alertType) { item in
             switch item {
@@ -135,12 +132,11 @@ struct FeatureName: View {
                 alertType = .error(message)
             }
         }
-        .onDisappear {
-            viewState.cancel()
-        }
     }
 }
 ```
+
+`@State` evaluates the `ObservableViewState(...)` initializer whenever the parent rebuilds the view and keeps only the first instance. Keep `Interactor.init` cheap: store dependencies, start requests from `.task`.
 
 For async event consumption instead of `.onReceive`, request a stream when the consumer starts:
 
@@ -152,4 +148,6 @@ for await event in viewState.eventStream() {
 
 Each call creates an independent subscription and keeps only the newest pending event by default.
 
-Synchronous actions should mutate `state` and return `nil`. Use `.cancelPrevious(key)` for replaceable requests, `.dropWhileRunning(key)` for duplicate suppression, and `.concurrent` for independent work. Split large feature state into focused screens, and keep high-frequency intermediate UI values in local `@State`.
+Synchronous actions should mutate `state` and return `nil`. A plain `Work` replaces the previous one. Use `Work(.dropWhileRunning)` to ignore a duplicate of that same slot, and `Work(.concurrent)` only when the operation must keep running beside it. Stop one concurrent operation with the handle `trigger` returned. Split large feature state into focused screens, and keep high-frequency intermediate UI values in local `@State`.
+
+The View template uses iOS/tvOS 17+ and macOS 14+ APIs. The library itself supports older deployment targets through `ViewState`. A dropped Work still performs its synchronous reduction. `finish()` returns promptly on cancellation even if the underlying operation ignores cancellation.
